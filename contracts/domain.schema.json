@@ -7,6 +7,8 @@
     "version",
     "sample_id",
     "actors",
+    "quantity_chain",
+    "controlled_events",
     "facts",
     "constraints"
   ],
@@ -27,7 +29,38 @@
       "type": "array",
       "minItems": 2,
       "items": {
-        "type": "string"
+        "type": "object",
+        "required": [
+          "role",
+          "need"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "need": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "quantity_chain": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "controlled_events": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "string",
+        "minLength": 1
       }
     },
     "facts": {
