@@ -1,6 +1,6 @@
 {
   "domain": "seafood-yield-settlement",
-  "version": 1,
+  "version": 2,
   "sample_id": "record-015",
   "actors": [
     "东盟水产供应商",
@@ -11,12 +11,101 @@
   "facts": [
     "大会关注水产数字加工和跨境流通",
     "现场项目涉及跨境采购与水产深加工",
-    "目标链路连接东盟产地、广西集散和中国市场"
+    "目标链路连接东盟产地、广西集散和中国市场",
+    "采购按到厂毛重暂估，分级、解冻和深加工后形成多个成品与损耗",
+    "只保存最后净重会导致价格调整和质量争议无法复算"
   ],
   "constraints": [
     "采购批次称重",
     "加工产物谱系",
     "损耗复核",
     "价款结算"
-  ]
+  ],
+  "quantity_chain": [
+    {
+      "stage": "采购合同",
+      "record": "约定暂估单价、结算币种、品质基准与扣价规则",
+      "keeps": "合同版本"
+    },
+    {
+      "stage": "到货称重",
+      "record": "到厂毛重、皮重与净重，按毛重暂估入库",
+      "keeps": "称重流水"
+    },
+    {
+      "stage": "抽样品质",
+      "record": "抽样比例、品质等级与对应扣价依据",
+      "keeps": "检验记录"
+    },
+    {
+      "stage": "加工工单",
+      "record": "投料批次、班次、工艺路线与可执行配料",
+      "keeps": "工单版本"
+    },
+    {
+      "stage": "分级产物",
+      "record": "各等级成品的规格与重量",
+      "keeps": "分级记录"
+    },
+    {
+      "stage": "副产物",
+      "record": "头、壳、内脏等副产物重量与去向",
+      "keeps": "副产物记录"
+    },
+    {
+      "stage": "合理损耗",
+      "record": "解冻失水、修整损耗的重量与核定比例",
+      "keeps": "损耗复核"
+    },
+    {
+      "stage": "成品交付",
+      "record": "交付净重与最终结算数量",
+      "keeps": "交付单"
+    }
+  ],
+  "conservation": "每批投入净重 = 分级成品 + 副产物 + 核定损耗，差额超出核定比例必须复核并留痕",
+  "controls": [
+    {
+      "operation": "跨班次投料",
+      "dual_confirmation": true,
+      "versioned": true,
+      "rule": "交接班双方共同确认投料批次与数量，前后班次各留一版"
+    },
+    {
+      "operation": "混批",
+      "dual_confirmation": true,
+      "versioned": true,
+      "rule": "记录各来源批次的投入比例，产物按比例回溯到原批次"
+    },
+    {
+      "operation": "复称更正",
+      "dual_confirmation": true,
+      "versioned": true,
+      "rule": "保留原称重值与更正值，注明更正原因，不覆盖历史"
+    },
+    {
+      "operation": "部分拒收",
+      "dual_confirmation": true,
+      "versioned": true,
+      "rule": "按实收数量入账，拒收部分单列并通知供应商"
+    },
+    {
+      "operation": "委外加工",
+      "dual_confirmation": true,
+      "versioned": true,
+      "rule": "出厂与回厂两次称重确认，委外得率单独核算"
+    },
+    {
+      "operation": "币种换算",
+      "dual_confirmation": true,
+      "versioned": true,
+      "rule": "记录换算币种、汇率来源与取值时点，结算金额可复算"
+    }
+  ],
+  "views": {
+    "东盟水产供应商": "核对与自身批次有关的扣价依据、抽样结果与复算数量",
+    "车间质量人员": "查看可执行配料、投料指令与批次数量关系",
+    "采购财务人员": "结算时追溯每个数量和金额的来源单据与确认记录",
+    "管理层": "比较不同原料、产线与工艺的真实得率"
+  }
 }
